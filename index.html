@@ -323,7 +323,7 @@ function roundsTable(rounds){
   const allScores=rounds.map(r=>r.score);
   const globalAvg=allScores.length?allScores.reduce((a,b)=>a+b,0)/allScores.length:null;
   const t=el('table','tbl');
-  t.innerHTML=`<thead><tr><th>Datum</th><th>Bana</th><th>Slag</th><th>+/- Par</th><th>Vs snitt</th><th>GIR %</th><th>Puttar</th><th>Fairways</th><th>Eagles</th><th>Birdies</th><th>Bogeys</th><th>Others</th><th>Scrambling</th></tr></thead>`;
+  t.innerHTML=`<thead><tr><th>Datum</th><th>Bana</th><th>Slag</th><th>+/- Par</th><th>Vs snitt</th><th>GIR %</th><th>Puttar</th><th>Fairways</th><th>Eagles</th><th>Birdies</th><th>Bogeys</th><th>Scrambling</th></tr></thead>`;
   const tb=el('tbody');
   rounds.forEach(r=>{
     const par=COURSES[r.courseKey]?.par??72,d=r.score-par;
@@ -331,6 +331,7 @@ function roundsTable(rounds){
     const vsCol=vsSnitt==null?'var(--muted)':vsSnitt<-1?'var(--accent)':vsSnitt>1?'var(--red)':'var(--text)';
     const girPct=r.gir!=null?Math.round(r.gir/18*100)+'%':'–';
     const holes=r.holes||[];
+    const eagles=holes.filter(h=>h.strokes!=null&&(h.strokes-h.par<=-2||h.strokes===1)).length;
     const birdies=holes.filter(h=>h.strokes!=null&&h.strokes-h.par===-1).length;
     const bogeys=holes.filter(h=>h.strokes!=null&&h.strokes-h.par===1).length;
     const missGir=holes.filter(h=>h.gir===false&&h.putts!=null);
@@ -344,6 +345,7 @@ function roundsTable(rounds){
       <td style="font-family:'Courier New',Courier,monospace">${girPct}</td>
       <td style="font-family:'Courier New',Courier,monospace">${r.putts??'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace">${r.fairways??'–'}</td>
+      <td style="font-family:'Courier New',Courier,monospace;color:#FFCC00;font-weight:${eagles>0?'600':'400'}">${eagles||'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:#e05050;font-weight:${birdies>0?'600':'400'}">${birdies||'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:${bogeys>2?'var(--red)':'var(--muted)'}">${bogeys||'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace">${scrPct}</td>`;
