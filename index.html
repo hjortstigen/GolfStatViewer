@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Hooks GK – Golf Dashboard</title>
+<title>GolfStatViewer</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -348,7 +348,7 @@ function roundsTable(rounds){
       <td style="font-family:'Courier New',Courier,monospace;color:#FFCC00;font-weight:${eagles>0?'600':'400'}">${eagles}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:#e05050;font-weight:${birdies>0?'600':'400'}">${birdies||'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:${bogeys>2?'var(--red)':'var(--muted)'}">${bogeys||'–'}</td>
-      <td style="font-family:'Courier New',Courier,monospace;color:var(--muted)">${holes.filter(h=>h.strokes!=null&&h.strokes-h.par>=2).length||'–'}</td>
+      <td style="font-family:'Courier New',Courier,monospace;color:var(--muted)">${holes.filter(h=>h.strokes!=null&&h.strokes-h.par>=2).length}</td>
       <td style="font-family:'Courier New',Courier,monospace">${scrPct}</td>`;
     tb.appendChild(tr);
   });
@@ -639,6 +639,84 @@ function renderOverview(){
   rDistFw.appendChild(fwc);
   rDistFw.appendChild(puttCard);
   w.appendChild(rDistFw);
+
+  // Proximity card (full width, between distribution row and zones)
+  const proxHoles=ah.filter(h=>h.proximity!=null);
+  if(proxHoles.length>0){
+    const proxCard=el('div','card mb18');
+    const PDISTS=['<1','1-1.5','1.5-3','3-5','>5'];
+    const PDCOLS={'<1':'#FFD700','1-1.5':'#5fca5f','1.5-3':'#a8d5a2','3-5':'#d4822a','>5':'#c0392b'};
+    const pTot=proxHoles.length;
+    const pCount=v=>proxHoles.filter(h=>h.proximity===v).length;
+    const pPct=n=>pTot?Math.round(n/pTot*100):0;
+    const holedHoles=ah.filter(h=>h.holed_length!=null);
+    const hTot=holedHoles.length;
+    const hCount=v=>holedHoles.filter(h=>h.holed_length===v).length;
+    const hPct=n=>hTot?Math.round(n/hTot*100):0;
+
+    let proxHtml=`<div class="ct">Proximity – puttavstånd <span>${pTot} hål</span></div>`;
+    proxHtml+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">`;
+
+    // Proximity (first putt)
+    proxHtml+=`<div><div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Proximity – första putten (m)</div>`;
+    PDISTS.forEach(d=>{
+      const n=pCount(d),p=pPct(n);
+      proxHtml+=`<div class="dr"><div class="dl" style="color:${PDCOLS[d]}">${d} m</div><div class="dt"><div class="df" style="width:${p}%;background:${PDCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
+    });
+    proxHtml+=`</div>`;
+
+    // Holed length (last putt)
+    if(hTot>0){
+      proxHtml+=`<div><div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Hålad längd – sista putten (m)</div>`;
+      PDISTS.forEach(d=>{
+        const n=hCount(d),p=hPct(n);
+        proxHtml+=`<div class="dr"><div class="dl" style="color:${PDCOLS[d]}">${d} m</div><div class="dt"><div class="df" style="width:${p}%;background:${PDCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
+      });
+      proxHtml+=`</div>`;
+    } else {
+      proxHtml+=`<div style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">Ingen hålad längd-data ännu</div>`;
+    }
+    proxHtml+=`</div>`;
+    proxCard.innerHTML=proxHtml;
+    w.appendChild(proxCard);
+  }
+
+  // Putt-% per avstånd
+  {
+    const DISTS=['<1','1-1.5','1.5-3','3-5','>5'];
+    const DCOLS={'<1':'#FFCC00','1-1.5':'#2d6e2d','1.5-3':'#5a9e5a','3-5':'#d4822a','>5':'#c0392b'};
+    const puttAttempts=ah.flatMap(h=>{
+      const dists=h.puttDist||[];
+      const numPutts=h.putts||0;
+      if(!dists.length||!numPutts) return [];
+      return dists.slice(0,numPutts).map((dist,pi)=>({dist,holed:pi===numPutts-1}));
+    });
+    if(puttAttempts.length>0){
+      const pc2=el('div','card mb18');
+      let html=`<div class="ct">Puttning – % hålad per avstånd</div>`;
+      html+=`<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Av alla puttar på en given längd – hur många gick i?</div>`;
+      html+=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">`;
+      DISTS.forEach(d=>{
+        const attempts=puttAttempts.filter(p=>p.dist===d);
+        const holed=attempts.filter(p=>p.holed).length;
+        const total=attempts.length;
+        if(!total){html+=`<div></div>`;return;}
+        const pct=Math.round(holed/total*100);
+        const col=DCOLS[d];
+        html+=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px">${d} m</div>
+          <div style="font-family:'Georgia','Times New Roman',serif;font-size:28px;font-weight:bold;color:${col};line-height:1">${pct}%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px">${holed}/${total}</div>
+          <div style="height:5px;background:var(--border);border-radius:3px;margin-top:8px">
+            <div style="height:5px;background:${col};border-radius:3px;width:${pct}%;opacity:.8"></div>
+          </div>
+        </div>`;
+      });
+      html+=`</div>`;
+      pc2.innerHTML=html;
+      w.appendChild(pc2);
+    }
+  }
 
   // Row: zones (g2)
   const rZones=el('div','g2');
