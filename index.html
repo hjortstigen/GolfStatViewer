@@ -701,22 +701,16 @@ function renderOverview(){
     });
     if(puttAttempts.length>0){
       let ph=`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--surface2)">`;
-      ph+=`<div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">% hålad per avstånd</div>`;
-      ph+=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">`;
+      ph+=`<div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">% hålad per avstånd</div>`;
       DISTS.forEach(d=>{
         const attempts=puttAttempts.filter(p=>p.dist===d);
         const holed=attempts.filter(p=>p.holed).length;
         const total=attempts.length;
-        if(!total){ph+=`<div></div>`;return;}
+        if(!total) return;
         const pct=Math.round(holed/total*100);
-        const col=DCOLS[d];
-        ph+=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center">
-          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px">${d}m</div>
-          <div style="font-family:'Georgia','Times New Roman',serif;font-size:22px;font-weight:bold;color:${col};line-height:1">${pct}%</div>
-          <div style="font-size:9px;color:var(--muted);margin-top:3px">${holed}/${total}</div>
-        </div>`;
+        ph+=`<div class="dr"><div class="dl" style="color:${DCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${pct}%;background:${DCOLS[d]};opacity:.85"></div></div><div class="dp">${pct}%</div><div class="dn">${holed}/${total}</div></div>`;
       });
-      ph+=`</div></div>`;
+      ph+=`</div>`;
       puttCard.innerHTML+=ph;
     }
   }
@@ -857,21 +851,14 @@ function renderRoundDetail(){
     }
     if(puttAttempts.length>0){
       zp.innerHTML+=`<div class="sl2" style="margin-top:14px">% hålad per avstånd</div>`;
-      let html=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px">`;
       DISTS.forEach(d=>{
         const attempts=puttAttempts.filter(p=>p.dist===d);
         const holed=attempts.filter(p=>p.holed).length;
         const total=attempts.length;
-        if(!total){html+=`<div></div>`;return;}
+        if(!total) return;
         const pct=Math.round(holed/total*100);
-        html+=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center">
-          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px">${d}m</div>
-          <div style="font-family:'Georgia','Times New Roman',serif;font-size:20px;font-weight:bold;color:${DCOLS[d]};line-height:1">${pct}%</div>
-          <div style="font-size:9px;color:var(--muted);margin-top:3px">${holed}/${total}</div>
-        </div>`;
+        zp.innerHTML+=`<div class="dr"><div class="dl" style="color:${DCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${pct}%;background:${DCOLS[d]};opacity:.85"></div></div><div class="dp">${pct}%</div><div class="dn">${holed}/${total}</div></div>`;
       });
-      html+=`</div>`;
-      zp.innerHTML+=html;
     }
   }
 
