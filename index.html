@@ -516,32 +516,14 @@ function renderOverview(){
     const PDISTS=['<1','1-1.5','1.5-3','3-5','>5'];
     const PDCOLS={'<1':'#FFD700','1-1.5':'#2d6e2d','1.5-3':'#5a9e5a','3-5':'#d4822a','>5':'#c0392b'};
     const proxHoles=fahF.filter(h=>h.proximity!=null);
-    const holedHoles=fahF.filter(h=>h.holed_length!=null);
-    if(proxHoles.length>0||holedHoles.length>0){
+    if(proxHoles.length>0){
       const sep=el('div');sep.style.cssText='margin-top:14px;padding-top:12px;border-top:1px solid var(--surface2)';
-      let ph=`<div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Proximity – puttavstånd</div>`;
-      ph+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">`;
-      // First putt (proximity)
-      if(proxHoles.length>0){
-        ph+=`<div><div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Första putten (m)</div>`;
-        PDISTS.forEach(d=>{
-          const n=proxHoles.filter(h=>h.proximity===d).length;
-          const p=Math.round(n/proxHoles.length*100);
-          ph+=`<div class="dr"><div class="dl" style="color:${PDCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${p}%;background:${PDCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
-        });
-        ph+=`</div>`;
-      }
-      // Last putt (holed length)
-      if(holedHoles.length>0){
-        ph+=`<div><div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Hålad längd (m)</div>`;
-        PDISTS.forEach(d=>{
-          const n=holedHoles.filter(h=>h.holed_length===d).length;
-          const p=Math.round(n/holedHoles.length*100);
-          ph+=`<div class="dr"><div class="dl" style="color:${PDCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${p}%;background:${PDCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
-        });
-        ph+=`</div>`;
-      }
-      ph+=`</div>`;
+      let ph=`<div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Proximity – första putten (m)</div>`;
+      PDISTS.forEach(d=>{
+        const n=proxHoles.filter(h=>h.proximity===d).length;
+        const p=Math.round(n/proxHoles.length*100);
+        ph+=`<div class="dr"><div class="dl" style="color:${PDCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${p}%;background:${PDCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
+      });
       sep.innerHTML=ph;
       dc.appendChild(sep);
     }
@@ -574,6 +556,42 @@ function renderOverview(){
   const fwParBtns=['Alla','Par 4','Par 5'].map(v=>`<button class="fbtn${(v==='Alla'&&!fwParF2)||(fwParF2===v)?' factive':''}" onclick="window._fwParF=${v==='Alla'?'null':"'" +v+"'"};renderOverview()">${v}</button>`).join('');
   const fwStatsHtml=(fwA.length?`<div style="margin-top:14px;display:flex;gap:16px"><div><div style="font-size:20px;font-weight:600;font-family:'Georgia','Times New Roman',serif">${Math.max(...fwA)}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Bäst</div></div><div><div style="font-size:20px;font-weight:600;font-family:'Georgia','Times New Roman',serif">${f1(af)}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Snitt</div></div></div>`:'');
   fwc.innerHTML=`<div class="ct">Fairways</div><div style="display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap">${fwFilterBtns}</div><div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap">${fwParBtns}</div>${barRow('✓ Träffad',fwFilteredH.filter(h=>h.fairway===true).length,fwt,'#2d6e2d')}${barRow('← Vänster',fwFilteredH.filter(h=>h.fairway==='Miss V').length,fwt,'#d4822a')}${barRow('→ Höger',fwFilteredH.filter(h=>h.fairway==='Miss H'||h.fairway===false).length,fwt,'#d4822a')}${fwStatsHtml}`;
+
+  // Snittscore + GIR% per fairway-utfall
+  {
+    const fwGroups = [
+      {label:'✓ Träffad', fn:h=>h.fairway===true,         col:'#2d6e2d'},
+      {label:'← Vänster', fn:h=>h.fairway==='Miss V',     col:'#d4822a'},
+      {label:'→ Höger',   fn:h=>h.fairway==='Miss H'||h.fairway===false, col:'#d4822a'},
+    ];
+    const scored = fwFilteredH.filter(h=>h.strokes!=null&&h.par!=null);
+    if(scored.length>0){
+      let html=`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--surface2)">`;
+      html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden">`;
+      // Header
+      html+=`<div style="background:var(--surface2);padding:5px 8px;font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;border-right:1px solid var(--border)"></div>`;
+      html+=`<div style="background:var(--surface2);padding:5px 8px;font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;border-right:1px solid var(--border);text-align:center">Snitt</div>`;
+      html+=`<div style="background:var(--surface2);padding:5px 8px;font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;text-align:center">GIR%</div>`;
+      fwGroups.forEach((g,gi)=>{
+        const holes=scored.filter(g.fn);
+        if(!holes.length){
+          html+=`<div style="padding:6px 8px;font-size:11px;color:${g.col};font-weight:600;border-top:1px solid var(--border);${gi<2?'border-right:1px solid var(--border)':''}">${g.label}</div>`;
+          html+=`<div style="padding:6px 8px;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid var(--border);border-right:1px solid var(--border)">–</div>`;
+          html+=`<div style="padding:6px 8px;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid var(--border)">–</div>`;
+          return;
+        }
+        const avgScore=avg(holes.map(h=>h.strokes-h.par));
+        const girPct=Math.round(holes.filter(h=>h.gir===true).length/holes.length*100);
+        const scoreCol=avgScore<0?'#c0392b':avgScore===0?'#2d6e2d':'#1a1a18';
+        const scoreStr=(avgScore>=0?'+':'')+avgScore.toFixed(2);
+        html+=`<div style="padding:6px 8px;font-size:11px;color:${g.col};font-weight:600;border-top:1px solid var(--border);border-right:1px solid var(--border)">${g.label}</div>`;
+        html+=`<div style="padding:6px 8px;text-align:center;font-size:12px;font-weight:600;font-family:'Courier New',monospace;color:${scoreCol};border-top:1px solid var(--border);border-right:1px solid var(--border)">${scoreStr}</div>`;
+        html+=`<div style="padding:6px 8px;text-align:center;font-size:12px;font-weight:600;font-family:'Courier New',monospace;color:var(--accent);border-top:1px solid var(--border)">${girPct}%</div>`;
+      });
+      html+=`</div></div>`;
+      fwc.innerHTML+=html;
+    }
+  }
   const gc=el('div','card');gc.innerHTML='<div class="ct">GIR</div>';
   if(girA.length){
     const avgGirPct=Math.round(avg(girA)/18*100);
