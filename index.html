@@ -836,6 +836,45 @@ function renderRoundDetail(){
   if(gz.length){zp.innerHTML+='<div class="sl2">Greenträff ('+gz.length+')</div>';zp.appendChild(zoneHeat(gz,'greenZone',['BV','B','BH','V','C','H','FV','F','FH'],false));}
   if(mz.length){zp.innerHTML+='<div class="sl2" style="margin-top:14px">Greenmiss ('+mz.length+')</div>';zp.appendChild(zoneHeat(mz,'missZone',['BV','B','BH','V',null,'H','FV','F','FH'],true));}
 
+  // Proximity + % hålad per avstånd
+  {
+    const DISTS=['<1','1-1.5','1.5-3','3-5','>5'];
+    const DCOLS={'<1':'#FFCC00','1-1.5':'#2d6e2d','1.5-3':'#5a9e5a','3-5':'#d4822a','>5':'#c0392b'};
+    const proxHoles=ah.filter(h=>h.proximity!=null);
+    const puttAttempts=ah.flatMap(h=>{
+      const dists=h.puttDist||[];
+      const numPutts=h.putts||0;
+      if(!dists.length||!numPutts) return [];
+      return dists.slice(0,numPutts).map((dist,pi)=>({dist,holed:pi===numPutts-1}));
+    });
+    if(proxHoles.length>0){
+      zp.innerHTML+=`<div class="sl2" style="margin-top:14px">Proximity (${proxHoles.length} hål)</div>`;
+      DISTS.forEach(d=>{
+        const n=proxHoles.filter(h=>h.proximity===d).length;
+        const p=Math.round(n/proxHoles.length*100);
+        zp.innerHTML+=`<div class="dr"><div class="dl" style="color:${DCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${p}%;background:${DCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
+      });
+    }
+    if(puttAttempts.length>0){
+      zp.innerHTML+=`<div class="sl2" style="margin-top:14px">% hålad per avstånd</div>`;
+      let html=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px">`;
+      DISTS.forEach(d=>{
+        const attempts=puttAttempts.filter(p=>p.dist===d);
+        const holed=attempts.filter(p=>p.holed).length;
+        const total=attempts.length;
+        if(!total){html+=`<div></div>`;return;}
+        const pct=Math.round(holed/total*100);
+        html+=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center">
+          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px">${d}m</div>
+          <div style="font-family:'Georgia','Times New Roman',serif;font-size:20px;font-weight:bold;color:${DCOLS[d]};line-height:1">${pct}%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">${holed}/${total}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+      zp.innerHTML+=html;
+    }
+  }
+
   // Hole-by-hole
   const hd=document.getElementById('roundHoles');hd.innerHTML='';
   if(!ah.length) return;
@@ -883,7 +922,7 @@ function renderRoundDetail(){
   nineWrapper.appendChild(totalBox);
   hd.appendChild(nineWrapper);
   const tbl=el('table','tbl');tbl.style.cssText='margin-top:12px;font-size:14px';
-  tbl.innerHTML=`<thead><tr><th>Hål</th><th>Par</th><th>HCP</th><th>Slag</th><th>+/-</th><th>Klubba</th><th>Fairway</th><th>Inspel</th><th>GIR</th><th>Green zon</th><th>Miss zon</th><th>Putt</th></tr></thead>`;
+  tbl.innerHTML=`<thead><tr><th>Hål</th><th>Par</th><th>HCP</th><th>Slag</th><th>+/-</th><th>Klubba</th><th>Fairway</th><th>Inspel</th><th>GIR</th><th>Green zon</th><th>Miss zon</th><th>Proximity</th><th>Putt</th><th>Hålad</th></tr></thead>`;
   const tb=el('tbody');
   ah.forEach(h=>{
     if(!h.strokes) return;
@@ -894,7 +933,7 @@ function renderRoundDetail(){
     const scrVal=h.gir===false&&h.putts!=null?(h.putts<=1?'✓':'✗'):'';
     const scrCol=scrVal==='✓'?'var(--accent)':scrVal==='✗'?'var(--red)':'';
     const tr=el('tr');
-    tr.innerHTML=`<td style="font-weight:600">${h.hole}</td><td style="color:var(--muted)">${h.par}</td><td style="color:var(--muted);font-family:'Courier New',Courier,monospace">${hcp}</td><td style="font-weight:600;color:${col}">${h.strokes}</td><td><span class="pill ${pc(d)}">${d===0?'E':d>0?'+'+d:d}</span></td><td style="font-family:'Courier New',Courier,monospace;font-size:12px">${h.teeClub??''}</td><td style="font-size:12px;color:${fwc}">${h.par>=4?fw:''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace">${h.inspelLen??''}</td><td>${h.gir===true?'<span style="color:var(--accent)">✓</span>':h.gir===false?'<span style="color:var(--red)">✗</span>':''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace;color:var(--accent)">${h.gir===true?h.greenZone??'':''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace;color:var(--red)">${h.gir===false?h.missZone??'':''}</td><td style="font-family:'Courier New',Courier,monospace">${h.putts??''}</td>`;
+    tr.innerHTML=`<td style="font-weight:600">${h.hole}</td><td style="color:var(--muted)">${h.par}</td><td style="color:var(--muted);font-family:'Courier New',Courier,monospace">${hcp}</td><td style="font-weight:600;color:${col}">${h.strokes}</td><td><span class="pill ${pc(d)}">${d===0?'E':d>0?'+'+d:d}</span></td><td style="font-family:'Courier New',Courier,monospace;font-size:12px">${h.teeClub??''}</td><td style="font-size:12px;color:${fwc}">${h.par>=4?fw:''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace">${h.inspelLen??''}</td><td>${h.gir===true?'<span style="color:var(--accent)">✓</span>':h.gir===false?'<span style="color:var(--red)">✗</span>':''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace;color:var(--accent)">${h.gir===true?h.greenZone??'':''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace;color:var(--red)">${h.gir===false?h.missZone??'':''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace;color:var(--muted)">${h.proximity??''}</td><td style="font-family:'Courier New',Courier,monospace">${h.putts??''}</td><td style="font-size:11px;font-family:'Courier New',Courier,monospace;color:var(--muted)">${h.holed_length??''}</td>`;
     tb.appendChild(tr);
   });
   tbl.appendChild(tb);hd.appendChild(tbl);
