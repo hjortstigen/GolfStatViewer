@@ -227,6 +227,55 @@ function zoneHeat(holes,key,zones,isMiss){
   return elH('div',h+`</div><div class="zdir">FRAM</div></div>`);
 }
 
+
+function combinedZoneGrid(gzHoles, mzHoles) {
+  const total = gzHoles.length + mzHoles.length;
+  if(!total) return elH('p','Ingen data','color:var(--muted);font-size:12px');
+  const gzC={};['BV','B','BH','V','C','H','FV','F','FH'].forEach(z=>gzC[z]=gzHoles.filter(h=>h.greenZone===z).length);
+  const mzC={};['BV','B','BH','V','H','FV','F','FH'].forEach(z=>mzC[z]=mzHoles.filter(h=>h.missZone===z).length);
+  const allMax=Math.max(...Object.values(gzC),...Object.values(mzC),1);
+  function gh(z){
+    const n=gzC[z]||0,p=total?Math.round(n/total*100):0,t=allMax>0?n/allMax:0;
+    if(!n) return {bg:'background:var(--surface2)',bc:'border-color:var(--border)',tc:'color:var(--muted)',p:0,n:0};
+    const r=Math.round(80+t*148),g=Math.round(140+t*73),b=Math.round(50-t*30);
+    return {bg:`background:rgba(${r},${g},${b},${.15+t*.35})`,bc:`border-color:rgba(${r},${g},${b},${.4+t*.4})`,tc:`color:rgb(${r},${g},${b})`,p,n};
+  }
+  function mh(z){
+    const n=mzC[z]||0,p=total?Math.round(n/total*100):0,t=allMax>0?n/allMax:0;
+    if(!n) return {bg:'background:var(--surface2)',bc:'border-color:var(--border)',tc:'color:var(--muted)',p:0,n:0};
+    const r=Math.round(180+t*44),g=Math.round(80+t*20),b=Math.round(60-t*40);
+    return {bg:`background:rgba(${r},${g},${b},${.15+t*.35})`,bc:`border-color:rgba(${r},${g},${b},${.4+t*.4})`,tc:`color:rgb(${r},${g},${b})`,p,n};
+  }
+  function gcell(h,lbl){return `<div class="zcell" style="${h.bg};${h.bc}"><div class="zi" style="color:rgba(80,160,80,0.7)">${lbl}</div><div class="zp" style="${h.tc}">${h.p>0?h.p+'%':'–'}</div><div class="zn">${h.n>0?h.n:''}</div></div>`;}
+  function mcell(h,lbl,span){return `<div class="zcell" style="${h.bg};${h.bc};${span||''}" ><div class="zi" style="color:rgba(200,80,80,0.7)">${lbl}</div><div class="zp" style="${h.tc}">${h.p>0?h.p+'%':'–'}</div><div class="zn">${h.n>0?h.n:''}</div></div>`;}
+  // 5x5 grid: LV | L(span3) | LH / V(span3 rows) | BV B BH | H(span3 rows) / V | V C H | H / V | FV F FH | H / KV | K(span3) | KH
+  let s=`<div style="display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,auto);gap:4px">`;
+  const lv=mh('BV'),l=mh('B'),lh=mh('BH'),v=mh('V'),h=mh('H'),kv=mh('FV'),k=mh('F'),kh=mh('FH');
+  // Row 1
+  s+=`<div class="zcell" style="${lv.bg};${lv.bc};grid-column:1;grid-row:1"><div class="zi" style="color:rgba(200,80,80,0.7)">LV</div><div class="zp" style="${lv.tc}">${lv.p>0?lv.p+'%':'–'}</div><div class="zn">${lv.n>0?lv.n:''}</div></div>`;
+  s+=`<div class="zcell" style="${l.bg};${l.bc};grid-column:2/5;grid-row:1"><div class="zi" style="color:rgba(200,80,80,0.7)">L</div><div class="zp" style="${l.tc}">${l.p>0?l.p+'%':'–'}</div><div class="zn">${l.n>0?l.n:''}</div></div>`;
+  s+=`<div class="zcell" style="${lh.bg};${lh.bc};grid-column:5;grid-row:1"><div class="zi" style="color:rgba(200,80,80,0.7)">LH</div><div class="zp" style="${lh.tc}">${lh.p>0?lh.p+'%':'–'}</div><div class="zn">${lh.n>0?lh.n:''}</div></div>`;
+  // V span 3 rows
+  s+=`<div class="zcell" style="${v.bg};${v.bc};grid-column:1;grid-row:2/5;display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="zi" style="color:rgba(200,80,80,0.7)">V</div><div class="zp" style="${v.tc}">${v.p>0?v.p+'%':'–'}</div><div class="zn">${v.n>0?v.n:''}</div></div>`;
+  // H span 3 rows
+  s+=`<div class="zcell" style="${h.bg};${h.bc};grid-column:5;grid-row:2/5;display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="zi" style="color:rgba(200,80,80,0.7)">H</div><div class="zp" style="${h.tc}">${h.p>0?h.p+'%':'–'}</div><div class="zn">${h.n>0?h.n:''}</div></div>`;
+  // Row 2: BV B BH
+  s+=gcell(gh('BV'),'BV')+gcell(gh('B'),'B')+gcell(gh('BH'),'BH');
+  // Row 3: V C H
+  s+=gcell(gh('V'),'V')+gcell(gh('C'),'C')+gcell(gh('H'),'H');
+  // Row 4: FV F FH
+  s+=gcell(gh('FV'),'FV')+gcell(gh('F'),'F')+gcell(gh('FH'),'FH');
+  // Row 5: KV K(span3) KH
+  s+=`<div class="zcell" style="${kv.bg};${kv.bc};grid-column:1;grid-row:5"><div class="zi" style="color:rgba(200,80,80,0.7)">KV</div><div class="zp" style="${kv.tc}">${kv.p>0?kv.p+'%':'–'}</div><div class="zn">${kv.n>0?kv.n:''}</div></div>`;
+  s+=`<div class="zcell" style="${k.bg};${k.bc};grid-column:2/5;grid-row:5"><div class="zi" style="color:rgba(200,80,80,0.7)">K</div><div class="zp" style="${k.tc}">${k.p>0?k.p+'%':'–'}</div><div class="zn">${k.n>0?k.n:''}</div></div>`;
+  s+=`<div class="zcell" style="${kh.bg};${kh.bc};grid-column:5;grid-row:5"><div class="zi" style="color:rgba(200,80,80,0.7)">KH</div><div class="zp" style="${kh.tc}">${kh.p>0?kh.p+'%':'–'}</div><div class="zn">${kh.n>0?kh.n:''}</div></div>`;
+  s+=`</div>`;
+  s+=`<div style="display:flex;gap:12px;justify-content:center;margin-top:8px;font-size:10px;color:var(--muted)">`;
+  s+=`<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(80,160,80,0.4);border:1px solid rgba(80,160,80,0.6);margin-right:4px;vertical-align:middle"></span>Greenträff (${gzHoles.length})</span>`;
+  s+=`<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(200,80,80,0.4);border:1px solid rgba(200,80,80,0.6);margin-right:4px;vertical-align:middle"></span>Greenmiss (${mzHoles.length})</span>`;
+  s+=`<span>% av ${total} hål</span></div>`;
+  return elH('div',`<div class="zw"><div class="zdir">BAK / LÅNG</div>${s}<div class="zdir" style="margin-top:4px">FRAM / KORT</div></div>`);
+}
 function scoreChart(sorted,h=180){
   const pars=sorted.map(r=>COURSES[r.courseKey]?.par??72);
   const scores=sorted.map(r=>r.score);
@@ -722,16 +771,12 @@ function renderOverview(){
   w.appendChild(rDistFw);
 
   // Row: zones (g2)
-  const rZones=el('div','g2');
-  const gzc=el('div','card');
-  gzc.innerHTML=`<div class="ct">Greenträff – zoner <span>${gz.length}</span></div><div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap">${mkZoneFilterBtns()}</div>`;
-  gzc.appendChild(zoneHeat(gz,'greenZone',['BV','B','BH','V','C','H','FV','F','FH'],false));
-  rZones.appendChild(gzc);
-  const mzc=el('div','card');
-  mzc.innerHTML=`<div class="ct">Greenmiss – zoner <span>${mz.length}</span></div><div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap">${mkZoneFilterBtns()}</div>`;
-  mzc.appendChild(zoneHeat(mz,'missZone',['BV','B','BH','V',null,'H','FV','F','FH'],true));
-  rZones.appendChild(mzc);
-  w.appendChild(rZones);
+  if(gz.length||mz.length){
+    const combinedZoneCard=el('div','card mb18');
+    combinedZoneCard.innerHTML=`<div class="ct">Green & Miss – kombinerat <span>${gz.length+mz.length}</span></div><div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap">${mkZoneFilterBtns()}</div>`;
+    combinedZoneCard.appendChild(combinedZoneGrid(gz,mz));
+    w.appendChild(combinedZoneCard);
+  }
 
   // Full width table
   const tc=el('div','card mb18');tc.innerHTML='<div class="ct">Alla rundor</div>';tc.appendChild(roundsTable([...R].sort((a,b)=>new Date(b.date)-new Date(a.date))));
@@ -803,8 +848,7 @@ function renderRoundDetail(){
       {l:'Scrambling',v:stats.scr,fmt:v=>v!=null?v+'%':'',col:'inherit'},
       {l:'Puttar',v:stats.putts,fmt:v=>v!=null?(Math.round(v*10)/10):'',col:'inherit'},
     ];
-    return `<div style="margin-bottom:8px">
-      <div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:${muted?'var(--muted)':'var(--text)'};margin-bottom:5px">${label}</div>
+    return `<div style="margin-bottom:8px;${!muted?'border:1px solid #FFCC00;border-radius:8px;padding:8px;':''}">\n      <div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:${muted?'var(--muted)':'var(--text)'};margin-bottom:5px">${label}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">${fields.map(f=>`<div class="chip" style="flex:1;min-width:60px"><div class="chip-v" style="color:${f.col}">${f.fmt(f.v)}</div><div class="chip-l">${f.l}</div></div>`).join('')}</div>
     </div>`;
   }
@@ -827,8 +871,10 @@ function renderRoundDetail(){
   // Zones
   const zp=document.getElementById('roundZones');zp.innerHTML='';
   const gz=ah.filter(h=>h.greenZone&&h.gir===true),mz=ah.filter(h=>h.missZone&&h.gir===false);
-  if(gz.length){zp.innerHTML+='<div class="sl2">Greenträff ('+gz.length+')</div>';zp.appendChild(zoneHeat(gz,'greenZone',['BV','B','BH','V','C','H','FV','F','FH'],false));}
-  if(mz.length){zp.innerHTML+='<div class="sl2" style="margin-top:14px">Greenmiss ('+mz.length+')</div>';zp.appendChild(zoneHeat(mz,'missZone',['BV','B','BH','V',null,'H','FV','F','FH'],true));}
+  if(gz.length||mz.length){
+    zp.innerHTML='<div class="sl2">Green & Miss – kombinerat</div>';
+    zp.appendChild(combinedZoneGrid(gz,mz));
+  }
 
   // Proximity + % hålad per avstånd
   {
@@ -1061,7 +1107,7 @@ function renderCourse(){
 
     // Records for this course
     const recCard=el('div','card mb18');
-    recCard.innerHTML=`<div class="ct">Rekord – ${course.name}</div>`;
+    recCard.innerHTML=`<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Rekord – ${course.name}</div>`;
     const byScore=[...cr].sort((a,b)=>a.score-b.score);
     const byPutts=[...cr].filter(r=>r.putts!=null).sort((a,b)=>a.putts-b.putts);
     const fwPctRounds=cr.map(r=>{const fwH=(r.holes||[]).filter(h=>h.par>=4);return fwH.length?Math.round(fwH.filter(h=>h.fairway===true).length/fwH.length*100):null;}).filter(v=>v!=null);
@@ -1207,7 +1253,7 @@ function renderRecords(){
   }).sort((a,b)=>b.streak-a.streak)[0];
 
   const recCard=el('div','card mb18');
-  recCard.innerHTML='<div class="ct">Rekord</div>';
+  recCard.innerHTML='<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Rekord</div>';
   const recGrid=el('div');
   recGrid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px';
 
@@ -1248,7 +1294,7 @@ function renderRecords(){
 
   // ── HÅL SNITTSCORE + HÅLSTATISTIK ──
   const g2=el('div','g2');
-  const hc=el('div','card');hc.innerHTML='<div class="ct">Hål snittscore</div>';
+  const hc=el('div','card');hc.innerHTML='<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Hål snittscore</div>';
   const holeAvgs=[];
   [...new Set(R.map(r=>r.courseKey))].forEach(key=>{
     const cr=R.filter(r=>r.courseKey===key);
@@ -1298,7 +1344,7 @@ function renderRecords(){
   wrap.appendChild(g2);
 
   // ── PAR-TYP SNITT ──
-  const parTypeCard=el('div','card mb18');parTypeCard.innerHTML='<div class="ct">Bästa snitt per par-typ på en runda</div>';
+  const parTypeCard=el('div','card mb18');parTypeCard.innerHTML='<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Bästa snitt per par-typ på en runda</div>';
   const parTypeGrid=el('div');parTypeGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px';
   [3,4,5].forEach(par=>{
     const rounds=R.map(r=>{
