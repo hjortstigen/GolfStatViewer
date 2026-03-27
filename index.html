@@ -848,8 +848,8 @@ function renderRoundDetail(){
       {l:'Scrambling',v:stats.scr,fmt:v=>v!=null?v+'%':'',col:'inherit'},
       {l:'Puttar',v:stats.putts,fmt:v=>v!=null?(Math.round(v*10)/10):'',col:'inherit'},
     ];
-    return `<div style="margin-bottom:8px;${!muted?'border:1px solid #FFCC00;border-radius:8px;padding:8px;':''}">\n      <div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:${muted?'var(--muted)':'var(--text)'};margin-bottom:5px">${label}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${fields.map(f=>`<div class="chip" style="flex:1;min-width:60px"><div class="chip-v" style="color:${f.col}">${f.fmt(f.v)}</div><div class="chip-l">${f.l}</div></div>`).join('')}</div>
+    return `<div style="margin-bottom:8px;">\n      <div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:${muted?'var(--muted)':'var(--text)'};margin-bottom:5px">${label}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${fields.map(f=>`<div class="chip" style="flex:1;min-width:60px;border:1px solid #FFCC00;border-radius:6px;padding:4px 6px"><div class="chip-v" style="color:${f.col}">${f.fmt(f.v)}</div><div class="chip-l">${f.l}</div></div>`).join('')}</div>
     </div>`;
   }
 
@@ -1107,7 +1107,7 @@ function renderCourse(){
 
     // Records for this course
     const recCard=el('div','card mb18');
-    recCard.innerHTML=`<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Rekord – ${course.name}</div>`;
+    recCard.innerHTML=`<div class="ct">Rekord – ${course.name}</div>`;
     const byScore=[...cr].sort((a,b)=>a.score-b.score);
     const byPutts=[...cr].filter(r=>r.putts!=null).sort((a,b)=>a.putts-b.putts);
     const fwPctRounds=cr.map(r=>{const fwH=(r.holes||[]).filter(h=>h.par>=4);return fwH.length?Math.round(fwH.filter(h=>h.fairway===true).length/fwH.length*100):null;}).filter(v=>v!=null);
@@ -1133,7 +1133,7 @@ function renderCourse(){
     recGrid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px';
     recs.forEach(rec=>{
       const cell=el('div');
-      cell.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center';
+      cell.style.cssText='background:var(--surface2);border:1px solid #FFCC00;border-radius:8px;padding:12px;text-align:center';
       cell.innerHTML=`<div style="font-size:22px;margin-bottom:4px">${rec.icon}</div><div style="font-family:'Georgia','Times New Roman',serif;font-size:24px;font-weight:bold;color:${rec.good?'var(--accent)':'#1a1a18'};line-height:1">${rec.v}</div><div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">${rec.l}</div>${rec.s?`<div style="font-size:10px;color:var(--muted);font-family:'Courier New',monospace;margin-top:2px">${rec.s}</div>`:''}`;
       recGrid.appendChild(cell);
     });
@@ -1253,14 +1253,14 @@ function renderRecords(){
   }).sort((a,b)=>b.streak-a.streak)[0];
 
   const recCard=el('div','card mb18');
-  recCard.innerHTML='<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Rekord</div>';
+  recCard.innerHTML='<div class="ct">Rekord</div>';
   const recGrid=el('div');
   recGrid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px';
 
   function recCell(icon,val,label,sub,col){
     if(val==null) return;
     const cell=el('div');
-    cell.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center';
+    cell.style.cssText='background:var(--surface2);border:1px solid #FFCC00;border-radius:8px;padding:12px;text-align:center';
     const color=col===true?'var(--accent)':col===false?'#1a1a18':col||'var(--accent)';
     cell.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${icon}</div><div style="font-family:'Georgia','Times New Roman',serif;font-size:24px;font-weight:bold;color:${color};line-height:1">${val}</div><div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">${label}</div>${sub?(()=>{const parts=sub.split(' – ');const date=parts[0]||'';const course=parts.slice(1).join(' – ')||'';return `<div style="font-size:10px;color:var(--muted);font-family:'Courier New',monospace;margin-top:2px">${date}</div>${course?`<div style="font-size:10px;color:var(--muted);margin-top:1px">${course}</div>`:''}`})():''}`;
     recGrid.appendChild(cell);
@@ -1294,7 +1294,7 @@ function renderRecords(){
 
   // ── HÅL SNITTSCORE + HÅLSTATISTIK ──
   const g2=el('div','g2');
-  const hc=el('div','card');hc.innerHTML='<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Hål snittscore</div>';
+  const hc=el('div','card');hc.innerHTML='<div class="ct">Hål snittscore</div>';
   const holeAvgs=[];
   [...new Set(R.map(r=>r.courseKey))].forEach(key=>{
     const cr=R.filter(r=>r.courseKey===key);
@@ -1318,7 +1318,7 @@ function renderRecords(){
   });
   const sc4=ah.filter(h=>h.strokes!=null&&h.par!=null);
   const eagles=sc4.filter(h=>h.strokes-h.par<=-2),birdies=sc4.filter(h=>h.strokes-h.par===-1),pars=sc4.filter(h=>h.strokes-h.par===0),bogeys=sc4.filter(h=>h.strokes-h.par===1);
-  hc.innerHTML+=`<div class="sl2" style="margin-top:16px">📊 Totalt</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">${[{l:'Eagles',v:eagles.length,c:'#FF8C00'},{l:'Birdies',v:birdies.length,c:'#e05050'},{l:'Pars',v:pars.length,c:'#2d6e2d'},{l:'Bogeys',v:bogeys.length,c:'#8a8a8a'}].map(s=>`<div style="text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 4px"><div style="font-size:22px;font-weight:600;font-family:'Georgia','Times New Roman',serif;color:${s.c}">${s.v}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">${s.l}</div></div>`).join('')}</div>`;
+  hc.innerHTML+=`<div class="sl2" style="margin-top:16px">📊 Totalt</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">${[{l:'Eagles',v:eagles.length,c:'#FF8C00'},{l:'Birdies',v:birdies.length,c:'#e05050'},{l:'Pars',v:pars.length,c:'#2d6e2d'},{l:'Bogeys',v:bogeys.length,c:'#8a8a8a'}].map(s=>`<div style="text-align:center;background:var(--surface2);border:1px solid #FFCC00;border-radius:8px;padding:10px 4px"><div style="font-size:22px;font-weight:600;font-family:'Georgia','Times New Roman',serif;color:${s.c}">${s.v}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">${s.l}</div></div>`).join('')}</div>`;
   g2.appendChild(hc);
 
   const holeStatCard=el('div','card');holeStatCard.innerHTML='<div class="ct">Hålstatistik</div>';
@@ -1344,7 +1344,7 @@ function renderRecords(){
   wrap.appendChild(g2);
 
   // ── PAR-TYP SNITT ──
-  const parTypeCard=el('div','card mb18');parTypeCard.innerHTML='<div class="ct" style="border:1px solid #FFCC00;border-radius:8px;padding:6px 10px;margin-bottom:18px">Bästa snitt per par-typ på en runda</div>';
+  const parTypeCard=el('div','card mb18');parTypeCard.innerHTML='<div class="ct">Bästa snitt per par-typ på en runda</div>';
   const parTypeGrid=el('div');parTypeGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px';
   [3,4,5].forEach(par=>{
     const rounds=R.map(r=>{
@@ -1357,7 +1357,7 @@ function renderRecords(){
     const best=rounds[0];
     const col=best.diff<0?'#e05050':best.diff===0?'#2d6e2d':'#1a1a18';
     const cell=el('div');
-    cell.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center';
+    cell.style.cssText='background:var(--surface2);border:1px solid #FFCC00;border-radius:8px;padding:14px;text-align:center';
     cell.innerHTML=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Par ${par}</div><div style="font-family:'Georgia','Times New Roman',serif;font-size:28px;font-weight:bold;color:${col};line-height:1">${best.avg.toFixed(2)}</div><div style="font-size:11px;color:${col};margin-top:3px">${best.diff>=0?'+':''}${best.diff.toFixed(2)}</div><div style="font-size:10px;color:var(--muted);margin-top:4px;font-family:'Courier New',monospace">${best.r.date}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${best.r.courseName?.replace('Hooks GK – ','')||''}</div>`;
     parTypeGrid.appendChild(cell);
   });
