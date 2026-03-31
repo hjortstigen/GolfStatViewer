@@ -378,7 +378,7 @@ function roundsTable(rounds){
     const par=COURSES[r.courseKey]?.par??72,d=r.score-par;
     const vsSnitt=globalAvg!=null?r.score-globalAvg:null;
     const vsCol=vsSnitt==null?'var(--muted)':vsSnitt<-1?'var(--accent)':vsSnitt>1?'var(--red)':'var(--text)';
-    const girPct=r.gir!=null?Math.round(r.gir/18*100)+'%':'–';
+    const girPct=r.gir!=null?Math.round(r.gir/18*100)+'%':'0%';
     const holes=r.holes||[];
     const eagles=holes.filter(h=>h.strokes!=null&&(h.strokes-h.par<=-2||h.strokes===1)).length;
     const birdies=holes.filter(h=>h.strokes!=null&&h.strokes-h.par===-1).length;
@@ -392,8 +392,8 @@ function roundsTable(rounds){
       <td><span class="pill ${pc(d)}">${d===0?'E':d>0?'+'+d:d}</span></td>
       <td style="font-family:'Courier New',Courier,monospace;color:${vsSnitt==null?'var(--muted)':vsSnitt<0?'#e05050':vsSnitt===0?'#2d6e2d':'#1a1a18'}">${vsSnitt!=null?(vsSnitt>=0?'+':'')+vsSnitt.toFixed(1):'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace">${girPct}</td>
-      <td style="font-family:'Courier New',Courier,monospace">${r.putts??'–'}</td>
-      <td style="font-family:'Courier New',Courier,monospace">${r.fairways??'–'}</td>
+      <td style="font-family:'Courier New',Courier,monospace">${r.putts??'0'}</td>
+      <td style="font-family:'Courier New',Courier,monospace">${(()=>{if(r.fairways==null) return '0';const fwH=(r.holes||[]).filter(h=>h.par>=4).length;return fwH?Math.round(r.fairways/fwH*100)+'%':'0';})()}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:#FFCC00;font-weight:${eagles>0?'600':'400'}">${eagles}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:#e05050;font-weight:${birdies>0?'600':'400'}">${birdies||'–'}</td>
       <td style="font-family:'Courier New',Courier,monospace;color:${bogeys>2?'var(--red)':'var(--muted)'}">${bogeys||'–'}</td>
@@ -564,13 +564,21 @@ function renderOverview(){
   {
     const PDISTS=['<1','1-1.5','1.5-3','3-5','>5'];
     const PDCOLS={'<1':'#FFD700','1-1.5':'#2d6e2d','1.5-3':'#5a9e5a','3-5':'#d4822a','>5':'#c0392b'};
-    const proxHoles=fahF.filter(h=>h.proximity!=null);
-    if(proxHoles.length>0){
+    const proxGirF=window._proxGirF||null; // null=alla, 'gir'=träff, 'miss'=miss
+    const proxBase=fahF.filter(h=>h.proximity!=null);
+    const proxHoles=proxGirF==='gir'?proxBase.filter(h=>h.gir===true):proxGirF==='miss'?proxBase.filter(h=>h.gir===false):proxBase;
+    if(proxBase.length>0){
       const sep=el('div');sep.style.cssText='margin-top:14px;padding-top:12px;border-top:1px solid var(--surface2)';
-      let ph=`<div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Proximity – första putten (m)</div>`;
+      const proxBtns=['Alla','Greenträff','Greenmiss'].map((lbl,i)=>{
+        const val=[null,'gir','miss'][i];
+        const active=(val===null&&!proxGirF)||(proxGirF===val);
+        return `<button class="fbtn${active?' factive':''}" onclick="window._proxGirF=${val===null?'null':"'"+val+"'"};renderOverview()">${lbl}</button>`;
+      }).join('');
+      let ph=`<div style="font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Proximity – första putten (m)</div>`;
+      ph+=`<div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap">${proxBtns}</div>`;
       PDISTS.forEach(d=>{
         const n=proxHoles.filter(h=>h.proximity===d).length;
-        const p=Math.round(n/proxHoles.length*100);
+        const p=proxHoles.length?Math.round(n/proxHoles.length*100):0;
         ph+=`<div class="dr"><div class="dl" style="color:${PDCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${p}%;background:${PDCOLS[d]};opacity:.85"></div></div><div class="dp">${p}%</div><div class="dn">${n}</div></div>`;
       });
       sep.innerHTML=ph;
@@ -742,11 +750,17 @@ function renderOverview(){
   {
     const DISTS=['<1','1-1.5','1.5-3','3-5','>5'];
     const DCOLS={'<1':'#FFCC00','1-1.5':'#2d6e2d','1.5-3':'#5a9e5a','3-5':'#d4822a','>5':'#c0392b'};
+    // Use puttDist if available, otherwise synthesize from putts count using defaults
     const puttAttempts=ah.flatMap(h=>{
-      const dists=h.puttDist||[];
       const numPutts=h.putts||0;
-      if(!dists.length||!numPutts) return [];
-      return dists.slice(0,numPutts).map((dist,pi)=>({dist,holed:pi===numPutts-1}));
+      if(!numPutts) return [];
+      const diff=h.strokes!=null&&h.par!=null?h.strokes-h.par:null;
+      const dists=h.puttDist&&h.puttDist.length>=numPutts ? h.puttDist : Array(numPutts).fill(null).map((_,pi)=>{
+        if(pi===0) return '>5';
+        if(pi===numPutts-1) return '<1';
+        return '1-1.5';
+      });
+      return dists.slice(0,numPutts).map((dist,pi)=>({dist,holed:pi===numPutts-1,diff}));
     });
     if(puttAttempts.length>0){
       let ph=`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--surface2)">`;
@@ -757,7 +771,14 @@ function renderOverview(){
         const total=attempts.length;
         if(!total) return;
         const pct=Math.round(holed/total*100);
+        const byBirdie=attempts.filter(p=>p.diff!=null&&p.diff<0);
+        const byPar=attempts.filter(p=>p.diff!=null&&p.diff===0);
+        const byBogey=attempts.filter(p=>p.diff!=null&&p.diff>0);
+        const spct=(arr)=>arr.length?Math.round(arr.filter(p=>p.holed).length/arr.length*100):null;
+        const birdPct=spct(byBirdie),parPct=spct(byPar),bogPct=spct(byBogey);
+        const subCell=(v,bg)=>v!=null?`<div style="flex:1;text-align:center;padding:3px 2px;border-radius:4px;background:${bg};font-size:10px;font-weight:600;color:rgba(0,0,0,0.6)">${v}%</div>`:`<div style="flex:1"></div>`;
         ph+=`<div class="dr"><div class="dl" style="color:${DCOLS[d]}">${d}m</div><div class="dt"><div class="df" style="width:${pct}%;background:${DCOLS[d]};opacity:.85"></div></div><div class="dp">${pct}%</div><div class="dn">${holed}/${total}</div></div>`;
+        ph+=`<div style="display:flex;gap:3px;margin-bottom:6px;padding-left:36px">${subCell(birdPct,'rgba(220,80,80,0.2)')}${subCell(parPct,'rgba(80,160,80,0.2)')}${subCell(bogPct,'rgba(160,160,160,0.2)')}</div>`;
       });
       ph+=`</div>`;
       puttCard.innerHTML+=ph;
@@ -885,7 +906,8 @@ function renderRoundDetail(){
       const dists=h.puttDist||[];
       const numPutts=h.putts||0;
       if(!dists.length||!numPutts) return [];
-      return dists.slice(0,numPutts).map((dist,pi)=>({dist,holed:pi===numPutts-1}));
+      const diff=h.strokes!=null&&h.par!=null?h.strokes-h.par:null;
+      return dists.slice(0,numPutts).map((dist,pi)=>({dist,holed:pi===numPutts-1,diff}));
     });
     if(proxHoles.length>0){
       zp.innerHTML+=`<div class="sl2" style="margin-top:14px">Proximity (${proxHoles.length} hål)</div>`;
