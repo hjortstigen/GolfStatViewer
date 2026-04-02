@@ -186,6 +186,10 @@ const COURSES={
   park:{name:"Parkbanan",par:72,holes:[{n:1,par:4,hcp:9},{n:2,par:4,hcp:15},{n:3,par:3,hcp:1},{n:4,par:5,hcp:5},{n:5,par:4,hcp:13},{n:6,par:3,hcp:17},{n:7,par:3,hcp:7},{n:8,par:4,hcp:11},{n:9,par:4,hcp:3},{n:10,par:5,hcp:12},{n:11,par:4,hcp:8},{n:12,par:4,hcp:14},{n:13,par:3,hcp:4},{n:14,par:4,hcp:16},{n:15,par:5,hcp:6},{n:16,par:4,hcp:2},{n:17,par:5,hcp:18},{n:18,par:4,hcp:10}]},
   skog:{name:"Skogsbanan",par:72,holes:[{n:1,par:5,hcp:15},{n:2,par:4,hcp:3},{n:3,par:4,hcp:5},{n:4,par:3,hcp:13},{n:5,par:5,hcp:7},{n:6,par:4,hcp:1},{n:7,par:3,hcp:17},{n:8,par:4,hcp:11},{n:9,par:4,hcp:9},{n:10,par:4,hcp:10},{n:11,par:4,hcp:4},{n:12,par:5,hcp:12},{n:13,par:3,hcp:14},{n:14,par:4,hcp:18},{n:15,par:4,hcp:8},{n:16,par:3,hcp:16},{n:17,par:4,hcp:2},{n:18,par:5,hcp:6}]}
 };
+const EXTERNAL_COURSES={
+  gotastrom:{name:"Götaströms GK",par:72,holes:[{n:1,par:4,hcp:3},{n:2,par:4,hcp:9},{n:3,par:3,hcp:5},{n:4,par:5,hcp:13},{n:5,par:4,hcp:11},{n:6,par:3,hcp:15},{n:7,par:5,hcp:7},{n:8,par:3,hcp:17},{n:9,par:4,hcp:1},{n:10,par:5,hcp:16},{n:11,par:3,hcp:14},{n:12,par:4,hcp:2},{n:13,par:5,hcp:18},{n:14,par:4,hcp:8},{n:15,par:4,hcp:10},{n:16,par:5,hcp:4},{n:17,par:3,hcp:6},{n:18,par:4,hcp:12}]}
+};
+const getCourse=key=>COURSES[key]||EXTERNAL_COURSES[key]||null;
 const GIST_ID='4453cbef92f96d0aa014ef6358b75408';
 const INLINE=[{"id":1773351256655,"courseKey":"skog","courseName":"Hooks GK \u2013 Skogsbanan","date":"2026-03-12","score":74,"putts":35,"fairways":15,"gir":12,"holes":[{"hole":1,"par":5,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"F","missZone":null,"inspelLen":">150","teeClub":"Dr"},{"hole":2,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"FV","missZone":null,"inspelLen":"125-150","teeClub":"Dr"},{"hole":3,"par":4,"strokes":5,"putts":3,"fairway":true,"gir":true,"greenZone":"BH","missZone":null,"inspelLen":"125-150","teeClub":"Dr"},{"hole":4,"par":3,"strokes":2,"putts":1,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"100-125","teeClub":"Dr"},{"hole":5,"par":5,"strokes":4,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"F","inspelLen":">150","teeClub":"Dr"},{"hole":6,"par":4,"strokes":5,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"V","inspelLen":"100-125","teeClub":"Dr"},{"hole":7,"par":3,"strokes":3,"putts":1,"fairway":true,"gir":false,"greenZone":"C","missZone":"F","inspelLen":"125-150","teeClub":"Ir"},{"hole":8,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"B","missZone":null,"inspelLen":"<75","teeClub":"Dr"},{"hole":9,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"V","missZone":null,"inspelLen":"100-125","teeClub":"Dr"},{"hole":10,"par":4,"strokes":5,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"FH","inspelLen":"125-150","teeClub":"Hy"},{"hole":11,"par":4,"strokes":4,"putts":2,"fairway":"Miss H","gir":true,"greenZone":"V","missZone":null,"inspelLen":"100-125","teeClub":"Dr"},{"hole":12,"par":5,"strokes":5,"putts":2,"fairway":"Miss H","gir":true,"greenZone":"B","missZone":null,"inspelLen":"<75","teeClub":"Dr"},{"hole":13,"par":3,"strokes":4,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"H","inspelLen":"125-150","teeClub":"Ir"},{"hole":14,"par":4,"strokes":5,"putts":3,"fairway":true,"gir":true,"greenZone":"FH","missZone":null,"inspelLen":"100-125","teeClub":"FW"},{"hole":15,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"125-150","teeClub":"FW"},{"hole":16,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":true,"greenZone":"FH","missZone":null,"inspelLen":"100-125","teeClub":"Hy"},{"hole":17,"par":4,"strokes":5,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"FH","inspelLen":">150","teeClub":"FW"},{"hole":18,"par":5,"strokes":4,"putts":1,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"<75","teeClub":"FW"}]},{"courseKey":"skog","courseName":"Hooks GK \u2013 Skogsbanan","date":"2026-03-12","score":75,"putts":34,"fairways":16,"gir":10,"holes":[{"hole":1,"par":5,"strokes":5,"putts":3,"fairway":true,"gir":true,"greenZone":"F","missZone":null,"inspelLen":">150","teeClub":"Dr"},{"hole":2,"par":4,"strokes":5,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"B","inspelLen":"125-150","teeClub":"FW"},{"hole":3,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"FH","missZone":null,"inspelLen":"125-150","teeClub":"Dr"},{"hole":4,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"FV","inspelLen":"100-125","teeClub":"Ir"},{"hole":5,"par":5,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"F","missZone":null,"inspelLen":">150","teeClub":"Dr"},{"hole":6,"par":4,"strokes":5,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"F","inspelLen":"125-150","teeClub":"Dr"},{"hole":7,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":true,"greenZone":"FH","missZone":null,"inspelLen":"100-125","teeClub":"Ir"},{"hole":8,"par":4,"strokes":4,"putts":1,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"<75","teeClub":"Dr"},{"hole":9,"par":4,"strokes":4,"putts":1,"fairway":true,"gir":false,"greenZone":"C","missZone":"F","inspelLen":"100-125","teeClub":"FW"},{"hole":10,"par":4,"strokes":5,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"FH","inspelLen":"125-150","teeClub":"Hy"},{"hole":11,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"F","missZone":null,"inspelLen":"100-125","teeClub":"FW"},{"hole":12,"par":5,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"FH","missZone":null,"inspelLen":">150","teeClub":"Dr"},{"hole":13,"par":3,"strokes":3,"putts":1,"fairway":true,"gir":false,"greenZone":"C","missZone":"FH","inspelLen":"100-125","teeClub":"Ir"},{"hole":14,"par":4,"strokes":5,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"H","inspelLen":"100-125","teeClub":"FW"},{"hole":15,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"100-125","teeClub":"FW"},{"hole":16,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":true,"greenZone":"H","missZone":null,"inspelLen":"100-125","teeClub":"Ir"},{"hole":17,"par":4,"strokes":5,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"FH","inspelLen":"125-150","teeClub":"FW"},{"hole":18,"par":5,"strokes":5,"putts":2,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"<75","teeClub":"FW"}],"id":1773328355314},{"courseKey":"park","courseName":"Hooks GK \u2013 Parkbanan","date":"2026-03-12","score":74,"putts":34,"fairways":10,"gir":10,"holes":[{"hole":1,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"F","missZone":null,"inspelLen":"100-125","teeClub":"FW"},{"hole":2,"par":4,"strokes":4,"putts":3,"fairway":"Miss H","gir":true,"greenZone":"FH","missZone":null,"inspelLen":"125-150","teeClub":"Dr"},{"hole":3,"par":3,"strokes":4,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"H","inspelLen":"125-150","teeClub":"Ir"},{"hole":4,"par":5,"strokes":4,"putts":2,"fairway":"Miss H","gir":true,"greenZone":"F","missZone":null,"inspelLen":">150","teeClub":"Dr"},{"hole":5,"par":4,"strokes":4,"putts":1,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"100-125","teeClub":"Dr"},{"hole":6,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":true,"greenZone":"BH","missZone":null,"inspelLen":"100-125","teeClub":"Ir"},{"hole":7,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":true,"greenZone":"V","missZone":null,"inspelLen":"125-150","teeClub":"Ir"},{"hole":8,"par":4,"strokes":4,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"F","inspelLen":"75-100","teeClub":"Dr"},{"hole":9,"par":4,"strokes":4,"putts":1,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"FV","inspelLen":"100-125","teeClub":"Dr"},{"hole":10,"par":5,"strokes":5,"putts":3,"fairway":true,"gir":true,"greenZone":"F","missZone":null,"inspelLen":">150","teeClub":"Dr"},{"hole":11,"par":4,"strokes":5,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"FH","inspelLen":"125-150","teeClub":"Dr"},{"hole":12,"par":4,"strokes":5,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"H","inspelLen":"125-150","teeClub":"Dr"},{"hole":13,"par":3,"strokes":3,"putts":2,"fairway":true,"gir":true,"greenZone":"H","missZone":null,"inspelLen":"100-125","teeClub":"Ir"},{"hole":14,"par":4,"strokes":4,"putts":1,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"100-125","teeClub":"Dr"},{"hole":15,"par":5,"strokes":5,"putts":2,"fairway":true,"gir":false,"greenZone":"C","missZone":"V","inspelLen":">150","teeClub":"Dr"},{"hole":16,"par":4,"strokes":5,"putts":2,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"F","inspelLen":"125-150","teeClub":"Hy"},{"hole":17,"par":5,"strokes":4,"putts":1,"fairway":"Miss H","gir":false,"greenZone":"C","missZone":"H","inspelLen":">150","teeClub":"FW"},{"hole":18,"par":4,"strokes":4,"putts":2,"fairway":true,"gir":true,"greenZone":"C","missZone":null,"inspelLen":"100-125","teeClub":"FW"}],"id":1773327805767}];
 
@@ -1230,6 +1234,7 @@ function renderCourse(){
 
 // ── RECORDS ───────────────────────────────────────────────────────────────────
 function renderRecords(){
+  try {
   const ah=R.flatMap(r=>r.holes||[]);
   const sorted=[...R].sort((a,b)=>new Date(a.date)-new Date(b.date));
   const wrap=document.getElementById('recordsPage');wrap.innerHTML='';
@@ -1250,11 +1255,14 @@ function renderRecords(){
   const byConsecGir=R.map(r=>({r,n:maxConsecInRound(r,h=>h.gir===true)})).sort((a,b)=>b.n-a.n);
   const byConsec1Putt=R.map(r=>({r,n:maxConsecInRound(r,h=>h.putts===1)})).sort((a,b)=>b.n-a.n);
   const holeNums3=[...new Set(ah.filter(h=>h.strokes!=null).map(h=>h.hole))].sort((a,b)=>a-b);
-  const bestHoleBirdieStreak=holeNums3.map(n=>{
-    let mx=0,cur=0;
-    sorted.forEach(r=>{const h=(r.holes||[]).find(x=>x.hole===n);if(h&&h.strokes!=null&&h.strokes-h.par===-1)cur++;else cur=0;mx=Math.max(mx,cur);});
-    return {n,streak:mx};
-  }).sort((a,b)=>b.streak-a.streak)[0];
+  const bestHoleBirdieStreak=(()=>{
+    const res=holeNums3.map(n=>{
+      let mx=0,cur=0,bestR=null;
+      sorted.forEach(r=>{const h=(r.holes||[]).find(x=>x.hole===n);if(h&&h.strokes!=null&&h.strokes-h.par===-1){cur++;if(cur>=mx){mx=cur;bestR=r;}}else cur=0;});
+      return {n,streak:mx,r:bestR};
+    }).sort((a,b)=>b.streak-a.streak);
+    return res[0];
+  })();
 
   // Max consecutive fairways in a round
   const byConsecFw=R.map(r=>{
@@ -1268,11 +1276,14 @@ function renderRecords(){
     return {r,n:mx};
   }).sort((a,b)=>b.n-a.n);
   // Max consecutive 1-putts on same hole across rounds
-  const bestHole1PuttStreak=holeNums3.map(num=>{
-    let mx=0,cur=0;
-    sorted.forEach(r=>{const h=(r.holes||[]).find(x=>x.hole===num);if(h&&h.putts===1)cur++;else cur=0;mx=Math.max(mx,cur);});
-    return {n:num,streak:mx};
-  }).sort((a,b)=>b.streak-a.streak)[0];
+  const bestHole1PuttStreak=(()=>{
+    const res=holeNums3.map(num=>{
+      let mx=0,cur=0,bestR=null;
+      sorted.forEach(r=>{const h=(r.holes||[]).find(x=>x.hole===num);if(h&&h.putts===1){cur++;if(cur>=mx){mx=cur;bestR=r;}}else cur=0;});
+      return {n:num,streak:mx,r:bestR};
+    }).sort((a,b)=>b.streak-a.streak);
+    return res[0];
+  })();
 
   const recCard=el('div','card mb18');
   recCard.innerHTML='<div class="ct">Rekord</div>';
@@ -1288,16 +1299,16 @@ function renderRecords(){
     recGrid.appendChild(cell);
   }
 
-  const parForRound=r=>COURSES[r?.courseKey]?.par??72;
+  const parForRound=r=>getCourse(r?.courseKey)?.par??72;
   const scoreCol=v=>v==null?'var(--accent)':v<0?'#e05050':v===0?'#2d6e2d':'#1a1a18';
   const bestScoreDiff=bySc[0]?bySc[0].score-parForRound(bySc[0]):null;
   const worstScoreDiff=bySc[bySc.length-1]?bySc[bySc.length-1].score-parForRound(bySc[bySc.length-1]):null;
   const bestUtDiff=bestUt?bestUt.score-(parForRound(bestUt.r)/2):null;
   const bestInDiff=bestIn?bestIn.score-(parForRound(bestIn.r)/2):null;
-  recCell('🏆',bySc[0]?.score,'Lägsta score',(bySc[0]?.date||'')+' – '+(bySc[0]?.courseName?.replace('Hooks GK – ','')||''),scoreCol(bestScoreDiff));
-  recCell('😬',bySc[bySc.length-1]?.score,'Högsta score',(bySc[bySc.length-1]?.date||'')+' – '+(bySc[bySc.length-1]?.courseName?.replace('Hooks GK – ','')||''),scoreCol(worstScoreDiff));
-  recCell('📍',bestUt?.score,'Bästa 9 – Ut',(bestUt?.r?.date||'')+' – '+(bestUt?.r?.courseName?.replace('Hooks GK – ','')||''),scoreCol(bestUtDiff));
-  recCell('📍',bestIn?.score,'Bästa 9 – In',(bestIn?.r?.date||'')+' – '+(bestIn?.r?.courseName?.replace('Hooks GK – ','')||''),scoreCol(bestInDiff));
+  recCell('🏆',bySc[0]?.score!=null?bySc[0].score+(bestScoreDiff!=null?' ('+(bestScoreDiff>=0?'+':'')+bestScoreDiff+')':''):'–','Lägsta score',(bySc[0]?.date||'')+' – '+(bySc[0]?.courseName?.replace('Hooks GK – ','')||''),scoreCol(bestScoreDiff));
+  recCell('😬',bySc[bySc.length-1]?.score!=null?bySc[bySc.length-1].score+(worstScoreDiff!=null?' ('+(worstScoreDiff>=0?'+':'')+worstScoreDiff+')':''):'–','Högsta score',(bySc[bySc.length-1]?.date||'')+' – '+(bySc[bySc.length-1]?.courseName?.replace('Hooks GK – ','')||''),scoreCol(worstScoreDiff));
+  recCell('📍',bestUt?.score!=null?bestUt.score+(bestUtDiff!=null?' ('+(bestUtDiff>=0?'+':'')+bestUtDiff+')':''):'–','Bästa 9 – Ut',(bestUt?.r?.date||'')+' – '+(bestUt?.r?.courseName?.replace('Hooks GK – ','')||''),scoreCol(bestUtDiff));
+  recCell('📍',bestIn?.score!=null?bestIn.score+(bestInDiff!=null?' ('+(bestInDiff>=0?'+':'')+bestInDiff+')':''):'–','Bästa 9 – In',(bestIn?.r?.date||'')+' – '+(bestIn?.r?.courseName?.replace('Hooks GK – ','')||''),scoreCol(bestInDiff));
   recCell('⛳',byFwPct[0]?.pct!=null?byFwPct[0].pct+'%':null,'Högst Fairway %',(byFwPct[0]?.r?.date||'')+' – '+(byFwPct[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
   recCell('🔀',byScrPct[0]?.pct!=null?byScrPct[0].pct+'%':null,'Högst Scrambling %',(byScrPct[0]?.r?.date||'')+' – '+(byScrPct[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
   recCell('🎯',byGiPct[0]?.pct!=null?byGiPct[0].pct+'%':null,'Högst GIR %',(byGiPct[0]?.r?.date||'')+' – '+(byGiPct[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
@@ -1307,9 +1318,9 @@ function renderRecords(){
   recCell('🐦',byBirdies[0]?.n,'Flest birdies/runda',(byBirdies[0]?.r?.date||'')+' – '+(byBirdies[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
   recCell('🟢',byPars[0]?.n,'Flest pars/runda',(byPars[0]?.r?.date||'')+' – '+(byPars[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
   recCell('🔥',byConsecBirdies[0]?.n>0?byConsecBirdies[0].n:null,'Max birdies i rad/runda',(byConsecBirdies[0]?.r?.date||'')+' – '+(byConsecBirdies[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
-  recCell('🐦',bestHoleBirdieStreak?.streak>0?bestHoleBirdieStreak.streak:null,'Max birdies i rad på ett hål',bestHoleBirdieStreak?'Hål '+bestHoleBirdieStreak.n:null,true);
+  recCell('🐦',bestHoleBirdieStreak?.streak>0?bestHoleBirdieStreak.streak:null,'Max birdies i rad på ett hål',bestHoleBirdieStreak?'Hål '+bestHoleBirdieStreak.n+(bestHoleBirdieStreak.r?' – '+(bestHoleBirdieStreak.r.courseName?.replace('Hooks GK – ','')||''):''):null,true);
   recCell('🔥',byConsec1Putt[0]?.n>0?byConsec1Putt[0].n:null,'Max 1-puttar i rad/runda',(byConsec1Putt[0]?.r?.date||'')+' – '+(byConsec1Putt[0]?.r?.courseName?.replace('Hooks GK – ','')||''),true);
-  recCell('🔥',bestHole1PuttStreak?.streak>0?bestHole1PuttStreak.streak:null,'Max 1-puttar på ett hål',bestHole1PuttStreak?'Hål '+bestHole1PuttStreak.n:null,true);
+  recCell('🔥',bestHole1PuttStreak?.streak>0?bestHole1PuttStreak.streak:null,'Max 1-puttar på ett hål',bestHole1PuttStreak?'Hål '+bestHole1PuttStreak.n+(bestHole1PuttStreak.r?' – '+(bestHole1PuttStreak.r.courseName?.replace('Hooks GK – ','')||''):''):null,true);
 
   recCard.appendChild(recGrid);
   wrap.appendChild(recCard);
@@ -1350,12 +1361,14 @@ function renderRecords(){
   function topHoles(fn,n,icon,label,col){
     const counts=holeNums.map(num=>{
       const hs=allSc.filter(h=>h.hole===num);
-      const r2=R.find(r=>(r.holes||[]).some(h=>h.hole===num));
-      return {n:num,count:hs.filter(fn).length,total:hs.length,courseKey:r2?.courseKey};
+      const matchingRounds=R.filter(r=>(r.holes||[]).some(h=>h.hole===num&&fn(h))).sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const latestR=matchingRounds[0];
+      const r2=R.filter(r=>(r.holes||[]).some(h=>h.hole===num)).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+      return {n:num,count:hs.filter(fn).length,total:hs.length,courseKey:r2?.courseKey,courseName:r2?.courseName?.replace('Hooks GK – ','')||''};
     }).filter(h=>h.total>0).sort((a,b)=>b.count-a.count);
     holeStatCard.innerHTML+=`<div class="sl2" style="margin-top:12px">${icon} ${label}</div>`;
     counts.slice(0,3).forEach(h=>{
-      holeStatCard.innerHTML+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--surface2);font-size:13px"><span>Hål ${h.n} (${COURSES[h.courseKey]?.name||''})</span><span style="font-weight:600;color:${col};font-family:'Courier New',Courier,monospace">${h.count} / ${h.total} rundor</span></div>`;
+      holeStatCard.innerHTML+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--surface2);font-size:13px"><span>Hål ${h.n} – ${h.courseName}</span><span style="font-weight:600;color:${col};font-family:'Courier New',Courier,monospace">${h.count} / ${h.total} rundor</span></div>`;
     });
   }
   topHoles(h=>h.strokes-h.par===-1,'3','🐦','Flest birdies på ett hål','#e05050');
@@ -1392,8 +1405,12 @@ function renderRecords(){
   let b76=0,c76=0;sorted.forEach(r=>{if(r.score<76)c76++;else c76=0;b76=Math.max(b76,c76);});
   let b80=0,c80=0;sorted.forEach(r=>{if(r.score<80)c80++;else c80=0;b80=Math.max(b80,c80);});
   let bi=0,ci=0;for(let i=1;i<sorted.length;i++){if(sorted[i].score<sorted[i-1].score)ci++;else ci=0;bi=Math.max(bi,ci);}
-  str.innerHTML+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px"><div><div class="kv good">${bu}</div><div class="kl">Under/på par streak</div></div><div><div class="kv good">${b76}</div><div class="kl">Under 76 streak</div></div><div><div class="kv good">${b80}</div><div class="kl">Under 80 streak</div></div><div><div class="kv good">${bi}</div><div class="kl">Förbättringsstreak</div></div></div>`;
+  str.innerHTML+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">${[{v:bu,l:'Under/på par streak'},{v:b76,l:'Under 76 streak'},{v:b80,l:'Under 80 streak'},{v:bi,l:'Förbättringsstreak'}].map(s=>`<div style="background:var(--surface2);border:1px solid #FFCC00;border-radius:8px;padding:12px;text-align:center"><div class="kv good" style="margin:0 0 4px">${s.v}</div><div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">${s.l}</div></div>`).join('')}</div>`;
   wrap.appendChild(str);
+  } catch(e) {
+    document.getElementById('recordsPage').innerHTML += '<div style="background:#fee;border:2px solid red;padding:20px;margin:20px;font-family:monospace;font-size:13px"><b>ERROR in renderRecords:</b><br>' + e.message + '<br><pre>' + e.stack + '</pre></div>';
+    console.error('renderRecords error:', e);
+  }
 }
 window.addEventListener('DOMContentLoaded', ()=>{
   const gid=window._gistIdOverride||GIST_ID;
